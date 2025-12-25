@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+pinecone-client
+openai
+pandas
+python-dotenv
+pydantic
