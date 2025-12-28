@@ -11,7 +11,7 @@ The assistant is indexed with the full ted_talks_en.csv dataset, covering approx
 The following parameters are reported via the /api/stats endpoint:
 - Chunk Size: 1024 tokens (approximately 4000 characters). This size balances semantic richness with prompt efficiency.
 - Overlap Ratio: 0.2 (20%). This ensures context continuity and prevents information loss at the boundaries of text splits.
-- Top-k: 10. We chose a value of 10 to ensure high recall, especially for questions requiring multiple talk recommendations. This allows the model to identify at least three unique talk titles even when multiple chunks originate from the same talk.
+- Top-k: 8. I chose a value of 8 to ensure high recall, especially for questions requiring multiple talk recommendations. This allows the model to identify at least three unique talk titles even when multiple chunks originate from the same talk.
 
 3. System Guardrails
 The system is strictly grounded in the provided TED context. If an answer cannot be determined from the retrieved data, the model is instructed to respond: "I don't know based on the provided TED data."
