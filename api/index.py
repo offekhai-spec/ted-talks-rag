@@ -80,7 +80,7 @@ async def ask_question(request: QuestionRequest):
             "chunk": res['metadata']['text'] # Full chunk text for context 
         })
 
-    # 3. Build the Augmented Prompt using the required system instructions 
+# 3. Build the Augmented Prompt using the required system instructions 
     combined_context = "\n\n".join(contexts)
     system_prompt = (
         "You are a TED Talk assistant that answers questions strictly and only based on the "
@@ -91,6 +91,7 @@ async def ask_question(request: QuestionRequest):
         "Always explain your answer using the given context.\n\n"
         f"Context:\n{combined_context}"
     )
+
     
     # 4. Generate the final answer using the course LLM 
     response = client.chat.completions.create(
