@@ -44,14 +44,14 @@ async def get_stats():
       This overlap maintains context continuity, allowing the system to preserve semantic meaning 
       even when a topic spans across multiple chunks.
       
-    - top_k: 10 was selected to ensure high recall for multi-talk queries. Since a single talk 
+    - top_k: 8 was selected to ensure high recall for multi-talk queries. Since a single talk 
       might yield multiple relevant chunks, a higher value of k provides enough diversity to 
       identify and present at least three unique talk titles.
     """
     return {
         "chunk_size": 1024,
         "overlap_ratio": 0.2,
-        "top_k": 10
+        "top_k": 8
     }
 
 @app.post("/api/prompt")
@@ -65,7 +65,7 @@ async def ask_question(request: QuestionRequest):
     ).data[0].embedding
     
     # 2. Search Pinecone for the Top-k most similar chunks
-    results = index.query(vector=q_emb, top_k=10, include_metadata=True)
+    results = index.query(vector=q_emb, top_k=8, include_metadata=True)
     
     # Extract text contexts and prepare metadata for the JSON response
     contexts = []
