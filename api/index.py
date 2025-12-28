@@ -22,6 +22,13 @@ client = OpenAI(
 class QuestionRequest(BaseModel):
     question: str
 
+@app.get("/")
+async def root():
+    """
+    Root endpoint to prevent 404 errors on the home page.
+    """
+    return {"message": "TED Talk RAG API is running. Use /api/prompt for queries or /api/stats for configuration."}
+
 @app.get("/api/stats")
 async def get_stats():
     """
