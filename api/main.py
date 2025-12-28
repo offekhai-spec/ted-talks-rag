@@ -28,7 +28,7 @@ async def get_stats():
     return {
         "chunk_size": 1024,
         "overlap_ratio": 0.2,
-        "top_k": 5
+        "top_k": 10
     }
 
 @app.post("/api/prompt")
@@ -42,7 +42,7 @@ async def ask_question(request: QuestionRequest):
     ).data[0].embedding
     
     # 2. Search Pinecone for the Top-k most similar chunks [cite: 44]
-    results = index.query(vector=q_emb, top_k=5, include_metadata=True)
+    results = index.query(vector=q_emb, top_k=10, include_metadata=True)
     
     # Extract text contexts and prepare metadata for the JSON response [cite: 72]
     contexts = []
