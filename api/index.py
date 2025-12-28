@@ -1,5 +1,6 @@
 import os
 from fastapi import FastAPI
+from fastapi.responses import RedirectResponse # Added for redirection
 from pydantic import BaseModel
 from pinecone import Pinecone
 from openai import OpenAI
@@ -22,12 +23,12 @@ client = OpenAI(
 class QuestionRequest(BaseModel):
     question: str
 
-@app.get("/")
+@app.get("/", include_in_schema=False) # Excluded from schema to avoid cluttering docs
 async def root():
     """
-    Root endpoint to prevent 404 errors on the home page.
+    Redirects the root path to the automatic API documentation (Swagger UI).
     """
-    return {"message": "TED Talk RAG API is running. Use /api/prompt for queries or /api/stats for configuration."}
+    return RedirectResponse(url="/docs")
 
 @app.get("/api/stats")
 async def get_stats():
@@ -55,7 +56,7 @@ async def get_stats():
 
 @app.post("/api/prompt")
 async def ask_question(request: QuestionRequest):
-    """The main RAG endpoint[cite: 63]."""
+    """The main RAG endpoint."""
     
     # 1. Create embedding for the user's question
     q_emb = client.embeddings.create(
