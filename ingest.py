@@ -24,7 +24,7 @@ def get_embedding(text):
     try:
         response = client.embeddings.create(
             input=text,
-            model="RPRTHPB-text-embedding-3-small" # Required course model [cite: 33]
+            model="RPRTHPB-text-embedding-3-small" # Required course model 
         )
         return response.data[0].embedding
     except Exception as e:
@@ -46,9 +46,9 @@ for _, row in df.iterrows():
     speaker = str(row['speaker_1'])
     talk_id = str(row['talk_id'])
 
-    # Chunking logic: 4000 chars (~1000 tokens) to stay safe under 2048 token limit [cite: 42, 94]
+    # Chunking logic: 4000 chars (~1000 tokens) to stay safe under 2048 token limit 
     chunk_size = 4000
-    overlap = 800 # 20% overlap, strictly under the 30% limit [cite: 43, 95]
+    overlap = 800 # 20% overlap, strictly under the 30% limit 
     
     chunks = [transcript[i:i + chunk_size] for i in range(0, len(transcript), chunk_size - overlap)]
 

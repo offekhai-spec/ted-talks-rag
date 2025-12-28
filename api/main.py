@@ -24,7 +24,22 @@ class QuestionRequest(BaseModel):
 
 @app.get("/api/stats")
 async def get_stats():
-    """Returns the RAG configuration as required by the assignment [cite: 89-96]."""
+    """
+    Returns the RAG configuration. 
+    Hyperparameters chosen for efficiency and recall balance:
+    
+    - chunk_size: 1024 tokens (approx 4000 chars) was chosen to balance semantic richness and prompt efficiency. 
+      This size is large enough to capture complete ideas and logical paragraphs from TED transcripts 
+      without exceeding model context limits.
+      
+    - overlap_ratio: 0.2 (20%) ensures that no critical information is lost at the boundaries of text splits. 
+      This overlap maintains context continuity, allowing the system to preserve semantic meaning 
+      even when a topic spans across multiple chunks.
+      
+    - top_k: 10 was selected to ensure high recall for multi-talk queries. Since a single talk 
+      might yield multiple relevant chunks, a higher value of k provides enough diversity to 
+      identify and present at least three unique talk titles.
+    """
     return {
         "chunk_size": 1024,
         "overlap_ratio": 0.2,
@@ -41,10 +56,10 @@ async def ask_question(request: QuestionRequest):
         model="RPRTHPB-text-embedding-3-small"
     ).data[0].embedding
     
-    # 2. Search Pinecone for the Top-k most similar chunks [cite: 44]
+    # 2. Search Pinecone for the Top-k most similar chunks
     results = index.query(vector=q_emb, top_k=10, include_metadata=True)
     
-    # Extract text contexts and prepare metadata for the JSON response [cite: 72]
+    # Extract text contexts and prepare metadata for the JSON response
     contexts = []
     metadata_list = []
     
@@ -54,10 +69,10 @@ async def ask_question(request: QuestionRequest):
             "talk_id": res['metadata']['talk_id'],
             "title": res['metadata']['title'],
             "score": res['score'],
-            "chunk": res['metadata']['text'] # Full chunk text for context [cite: 76]
+            "chunk": res['metadata']['text'] # Full chunk text for context 
         })
 
-    # 3. Build the Augmented Prompt using the required system instructions [cite: 48-51]
+    # 3. Build the Augmented Prompt using the required system instructions 
     combined_context = "\n\n".join(contexts)
     system_prompt = (
         "You are a TED Talk assistant that answers questions strictly and only based on the "
@@ -69,7 +84,7 @@ async def ask_question(request: QuestionRequest):
         f"Context:\n{combined_context}"
     )
     
-    # 4. Generate the final answer using the course LLM [cite: 34]
+    # 4. Generate the final answer using the course LLM 
     response = client.chat.completions.create(
         model="RPRTHPB-gpt-5-mini",
         messages=[
